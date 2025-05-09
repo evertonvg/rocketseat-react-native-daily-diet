@@ -1,6 +1,7 @@
 export default {
   COLORS: {
     WHITE: '#FFFFFF',
+    BLACK: '#000000',
 
     RED_DARK: '#BF3B44',
     RED_LIGHT: '#F4E6E7',
@@ -29,5 +30,5 @@ export default {
     LG: 18,
     XL: 24,
     XXL: 32
-  }
+  },
 };

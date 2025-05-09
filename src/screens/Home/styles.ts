@@ -1,9 +1,21 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import styled,{ DefaultTheme } from "styled-components/native";
-
+import styled, { css } from "styled-components/native";
 
 export const Container = styled(SafeAreaView)`
-  background-color: ${({ theme }) => theme.COLORS.primary};
   flex: 1;
-  padding: 24px;
+  width: 100%;
+  ${({ theme }) => css`
+      background-color:  ${theme.COLORS.GRAY_700}px;
+  `};
 `;
+export const Text = styled.Text`
+  text-align: left;
+  ${({ theme }) => css`
+      color:  ${theme.COLORS.GRAY_100};
+      font-size: ${theme.FONT_SIZE.MD}px;
+      padding-left: 24px;
+      margin-bottom: 8px;
+  `};
+
+`
+

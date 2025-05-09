@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
+      "@types/*": ["./src/@types/*"],
       "@assets/*":["./src/assets/*"],
       "@components/*":["./src/components/*"],
       "@screens/*":["./src/screens/*"],
