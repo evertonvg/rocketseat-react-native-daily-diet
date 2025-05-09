@@ -11,6 +11,7 @@ export const Container = styled.TouchableOpacity`
   justify-content: center;
   display: block;
   gap: 4px;
+  
 
   ${({ theme, type = 'PRIMARY', size ="LARGE" }) => css`
     width: ${ size === 'LARGE' ? 'auto' : '190px'};
@@ -18,6 +19,8 @@ export const Container = styled.TouchableOpacity`
     border: 1px solid ${theme.COLORS.GRAY_200};
     background-color: ${ type === 'PRIMARY' ? theme.COLORS.GRAY_200 : theme.COLORS.WHITE};
   `};
+
+  margin-bottom: 30px;
 `;
 export const Title = styled.Text`
   font-size: 16px;
