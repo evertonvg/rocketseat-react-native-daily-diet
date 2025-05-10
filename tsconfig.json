@@ -3,17 +3,16 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@types/*": ["./src/@types/*"],
-      "@assets/*":["./src/assets/*"],
-      "@components/*":["./src/components/*"],
-      "@screens/*":["./src/screens/*"],
-      "@routes/*":["./src/routes/*"],
-      "@storage/*":["./src/storage/*"],
-      "@utils/*":["./src/utils/*"],
-      "@hooks/*":["./src/hooks/*"],
-      "@services/*":["./src/services/*"],
-      "@contexts/*":["./src/contexts/*"],
-      "@theme/*":["./src/theme/*"]
-    },
+      "@dtos/*": ["./src/dtos/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
+      "@screens/*": ["./src/screens/*"],
+      "@storage/*": ["./src/storage/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@services/*": ["./src/services/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@contexts/*": ["./src/contexts/*"],
+      "@routes/*": ["./src/routes/*"]
+    }
   }
 }
