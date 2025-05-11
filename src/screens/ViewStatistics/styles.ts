@@ -7,16 +7,20 @@ export const Container = styled(SafeAreaView)`
   width: 100%;
   margin: 0 auto;
   ${({ theme }) => css`
-      background-color:  ${theme.COLORS.GRAY_700}px;
+      background-color:  ${theme.COLORS.GRAY_700};
   `};
 `;
 export const Text = styled.Text`
-  margin: 20px 0;
   text-align: center;
+  padding: 20px 0;
+  transform: translateY(-10px);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   ${({ theme }) => css`
       font-family: ${theme.FONT_FAMILY.BOLD};
       color:  ${theme.COLORS.GRAY_100};
       font-size: ${theme.FONT_SIZE.SM}px;
+      background-color: ${theme.COLORS.GRAY_700};
   `};
 `;
 

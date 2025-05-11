@@ -5,6 +5,7 @@ export type ButtonSizeProps = "LARGE" | "SMALL";
 
 export const Container = styled.TouchableOpacity`
   height: 50px;
+  width: 100%;
   border-radius: 6px;
   flex-direction: row;
   align-items: center;

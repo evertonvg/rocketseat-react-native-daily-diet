@@ -15,7 +15,7 @@ export const Container = styled.View`
   ${({ theme, type = 'NEUTRAL' }) => css`
     background-color: ${theme.COLORS.GRAY_600};
     box-sizing: border-box;
-    background-color: ${ type ==='NEUTRAL' ?theme.COLORS.GRAY_600 : type ==='POSITIVE' ? theme.COLORS.GREEN_LIGHT : theme.COLORS.RED_LIGHT};
+    background-color: ${ type ==='NEGATIVE' ?theme.COLORS.RED_LIGHT : type ==='POSITIVE' ? theme.COLORS.GREEN_LIGHT : theme.COLORS.GRAY_600};
   `};
 `;
 

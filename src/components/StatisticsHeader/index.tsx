@@ -1,30 +1,43 @@
 import React from "react";
-import { Container, ArrowWrapper, PercentText, DetailText } from "./styles";
+import { Container, ArrowWrapper, PercentText, DetailText, Middletext } from "./styles";
 import { TouchableOpacity } from "react-native";
 import { useTheme } from "styled-components/native";
 import { ArrowLeft } from 'phosphor-react-native'
-import { CardTypeStyleProps } from "@components/StatisticsCard/styles";
 
-type Props =  {
-    statistic: number;
-    type?: CardTypeStyleProps;
-    back: () => void;
+import { goBack } from "@routes/NavigationService";
+
+type Props = {
+    statistic?: number;
+    type?: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL';
+    textType: 'SMALL' | 'MIDDLE';
+    text? : string
 } 
 
-export function StatisticsHeader({statistic, type = true, back, ...rest}: Props) {
+const handlePress = () => {
+    goBack();
+};
+
+export function StatisticsHeader({statistic, type = 'NEUTRAL', textType, text, ...rest}: Props) {
   const theme = useTheme();
+
+  let RenderedText;
+  if (textType === "MIDDLE") {
+    RenderedText = <Middletext>{text}</Middletext>;
+  } else {
+    RenderedText = <DetailText>{text}</DetailText>;
+  }
   
   return (
     <Container type={type} {...rest}>
       <ArrowWrapper>
-        <TouchableOpacity onPress={back}>
-          <ArrowLeft size={24} color={type ? theme.COLORS.GREEN_DARK : theme.COLORS.RED_DARK } />
+        <TouchableOpacity onPress={handlePress}>
+          <ArrowLeft size={24} color={type ==='POSITIVE' ? theme.COLORS.GREEN_DARK : type ==='NEGATIVE' ? theme.COLORS.RED_DARK : theme.COLORS.GRAY_200 } />
         </TouchableOpacity>
       </ArrowWrapper>
-      <PercentText>{statistic}%</PercentText>
-      <DetailText>
-        das refeições dentro da dieta
-      </DetailText>
+      {statistic && <PercentText>{statistic}%</PercentText>}
+      
+      { RenderedText }
+      
     </Container>
   );
 }   

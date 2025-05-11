@@ -4,22 +4,15 @@ import { useState } from 'react';
 import { StatisticsHeader } from '@components/StatisticsHeader';
 import { CountdownCard } from '@components/CountdownCard';
 
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "@routes/index";
-
-type Props = NativeStackScreenProps<RootStackParamList, "Details">;
-
-export function ViewStatistics({ navigation }: Props) {
+export function ViewStatistics() {
     const [isInDiet, setIsInDiet] = useState(true);
-
-    const handleNavigateToHome = () => {
-        console.warn('handleNavigateToHome')
-        navigation.navigate("Home");
-    };
-
     return(
         <Container>
-            <StatisticsHeader back={handleNavigateToHome} statistic={90.24} type={isInDiet} />
+            <StatisticsHeader 
+                statistic={90.24} 
+                type='POSITIVE'
+                textType='SMALL'
+                text='das refeições dentro da dieta' />
             <Text>
                 Estatísticas gerais
             </Text>

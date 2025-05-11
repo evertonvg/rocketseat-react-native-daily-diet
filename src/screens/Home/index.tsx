@@ -6,19 +6,18 @@ import { MainHeader } from '@components/MainHeader';
 import { SnackItem } from '@components/SnackItem';
 import { StatisticsCard } from '@components/StatisticsCard';
 
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "@routes/index";
-
-type Props = NativeStackScreenProps<RootStackParamList, "Home">;
-
 import { useState } from 'react';
+import { navigate } from '@routes/NavigationService';
 
-export function Home({ navigation }: Props) {
+export function Home() {
     const [isInDiet, setIsInDiet] = useState(true);
 
     const handleNavigateToDetails = () => {
-        navigation.navigate("Details");
+        navigate("Details");
     };
+    const handleNavigateToCreateFood = () =>{
+        navigate("CreateFood")
+    }
 
     return(
         <Container>
@@ -31,7 +30,7 @@ export function Home({ navigation }: Props) {
                 size="LARGE"
                 type="PRIMARY"
                 icon="plus"
-                
+                onPress={handleNavigateToCreateFood}
             />
             <Data data="12.08.22"/>
             <SnackItem
