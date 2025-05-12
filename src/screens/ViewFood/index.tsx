@@ -38,7 +38,7 @@ export function ViewFood() {
             <DietStatus>
                 <Ball variant={onDiet}></Ball>
                 <DietText>
-                    fora da dieta
+                    {onDiet ? 'Dentro da dieta' : 'fora da dieta'}
                 </DietText>
             </DietStatus>
             <FlexEnd/>
