@@ -11,7 +11,7 @@ import { ViewFood } from "@screens/ViewFood";
 
 export type RootStackParamList = {
   Home: undefined;
-  Details: undefined;
+  Details: undefined; 
   CreateFood: undefined;
   Feedback: undefined;
   ViewFood: undefined;

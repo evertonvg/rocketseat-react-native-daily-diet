@@ -1,10 +1,20 @@
 
 import { Container, FlexEnd, Title, Description, SubTitle, DietStatus, DietText, Ball } from './styles';
 import { useState } from 'react';
+import { useRoute } from "@react-navigation/native";
 import { StatisticsHeader } from '@components/StatisticsHeader';
 import { Button } from '@components/Button';
+import { hoursToMilliseconds } from 'date-fns';
 
 export function ViewFood() {
+    const route = useRoute();
+    const { title } = route.params as { title: string };
+    const { description } = route.params as { description: string };
+    const { date } = route.params as { date: string };
+    const { hour } = route.params as { hour: string };
+    const { onDiet } = route.params as { onDiet: boolean };
+
+
     const [isInDiet, setIsInDiet] = useState(true);
     return(
         <Container>
@@ -14,19 +24,19 @@ export function ViewFood() {
                 text='Refeição' 
             />
             <Title>
-                X-tudo
+               {title}
             </Title>
             <Description>
-                Xis completo da lancheria do bairro
+                {description}
             </Description>
             <SubTitle>
                 Data e hora
             </SubTitle>
             <Description>
-                12/08/2022 às 20:00
+                {date} às {hour}
             </Description>
             <DietStatus>
-                <Ball variant={true}></Ball>
+                <Ball variant={onDiet}></Ball>
                 <DietText>
                     fora da dieta
                 </DietText>

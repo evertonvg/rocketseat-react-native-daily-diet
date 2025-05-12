@@ -7,7 +7,8 @@ export const Container = styled.TouchableOpacity`
   margin-bottom: 8px;
 `;
 
-export const Text = styled.Text` 
+export const Text = styled.Text`
+margin-top :20px;
   padding-right: 8px;
   ${({ theme }) => css`
     color: ${theme.COLORS.GRAY_100};
