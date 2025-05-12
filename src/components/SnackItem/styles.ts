@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components/native";
 
-export type SnackStatus = "SUCCESS" | "FAILURE";
+export type SnackStatus = boolean;
 
 export const Container = styled.TouchableOpacity` 
 
@@ -49,7 +49,7 @@ export const Status = styled.Text`
   height: 14px;
   border-radius: 50px;
   ${({ theme, status }) => css`
-    background-color: ${ status === 'SUCCESS' ? theme.COLORS.GREEN_LIGHT : theme.COLORS.RED_LIGHT}
+    background-color: ${ status ? theme.COLORS.GREEN_LIGHT : theme.COLORS.RED_LIGHT}
   `};
 `;
 

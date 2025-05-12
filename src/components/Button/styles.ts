@@ -21,7 +21,7 @@ export const Container = styled.TouchableOpacity`
     background-color: ${ type === 'PRIMARY' ? theme.COLORS.GRAY_200 : theme.COLORS.WHITE};
   `};
 
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 `;
 export const Title = styled.Text`
   font-size: 16px;

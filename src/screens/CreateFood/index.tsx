@@ -20,9 +20,7 @@ export function CreateFood(){
 
     const [pickingMode, setPickingMode] = useState<"date" | "time">('date');
 
-    const [isInDiet,setIsInDiet] = useState<boolean>();
-    const [checkedTrue,setCheckedTrue] = useState<boolean>(true);
-    const [checkedFalse,setCheckedFalse] = useState<boolean>(false);
+    const [isInDiet,setIsInDiet] = useState<boolean>(true);
 
      const showPicker = (pickerMode: "date" | "time") => {
         if(pickerMode == 'date'){
@@ -54,13 +52,9 @@ export function CreateFood(){
     };
 
     const handleCheckIsInDiet = ()=>{
-        setCheckedTrue(true)
-        setCheckedFalse(false)
         setIsInDiet(true)
     }
     const handleCheckIsnotInDiet = ()=>{
-        setCheckedTrue(false)
-        setCheckedFalse(true)
         setIsInDiet(false)
     }
         
@@ -126,7 +120,7 @@ export function CreateFood(){
                         <RadioButton
                             title="Sim"
                             variant="POSITIVE"
-                            active={checkedTrue}
+                            active={isInDiet}
                             onPress={handleCheckIsInDiet}
                         />
                     </FormRowItem>
@@ -136,7 +130,7 @@ export function CreateFood(){
                         <RadioButton
                             title="Não"
                             variant="NEGATIVE"
-                            active={checkedFalse}
+                            active={!isInDiet}
                             onPress={handleCheckIsnotInDiet}
                         />
                     </FormRowItem>
