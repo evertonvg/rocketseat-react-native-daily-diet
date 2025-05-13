@@ -8,13 +8,14 @@ type Props = TouchableOpacityProps & {
     title: string;
     type?: ButtonTypeProps;
     size?: ButtonSizeProps;
+    disabled?: boolean;
     icon?: 'plus' | 'pencil' | 'trash';
 }
 
-export function Button({title, type = 'PRIMARY', size="LARGE", icon, ...rest }: Props) {
+export function Button({title, type = 'PRIMARY', size="LARGE", disabled=false, icon, ...rest }: Props) {
   const theme = useTheme();
   return (
-    <Container type={type} size={size} {...rest}>
+    <Container type={type} disabled={disabled} size={size}  {...rest}>
       {icon && (
         <IconWrapper>
           {icon === 'plus' && <Plus size={24} color={type === 'PRIMARY' ? theme.COLORS.WHITE : theme.COLORS.GRAY_200 } />}

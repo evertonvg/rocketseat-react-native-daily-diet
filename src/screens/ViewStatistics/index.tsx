@@ -1,6 +1,6 @@
 
 import { Container, Grid, HalfGrid, FullGrid, Text } from './styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StatisticsHeader } from '@components/StatisticsHeader';
 import { CountdownCard } from '@components/CountdownCard';
 import { useRoute } from "@react-navigation/native";
@@ -12,6 +12,10 @@ export function ViewStatistics() {
     const { onDietCount } = route.params as { onDietCount: number };
     const { outDietCount } = route.params as { outDietCount: number };
     const { bestSequence } = route.params as { bestSequence: number };
+
+    useEffect(()=>{
+        console.warn(onDietPercentage)
+    },[])
 
     return( 
         <Container>

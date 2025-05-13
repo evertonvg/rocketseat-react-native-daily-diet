@@ -34,7 +34,7 @@ export function StatisticsHeader({statistic, type = 'NEUTRAL', textType, text, .
           <ArrowLeft size={24} color={type ==='POSITIVE' ? theme.COLORS.GREEN_DARK : type ==='NEGATIVE' ? theme.COLORS.RED_DARK : theme.COLORS.GRAY_200 } />
         </TouchableOpacity>
       </ArrowWrapper>
-      {statistic && <PercentText>{statistic}%</PercentText>}
+      {statistic && <PercentText>{statistic ? statistic : 0}%</PercentText>}
       
       { RenderedText }
       

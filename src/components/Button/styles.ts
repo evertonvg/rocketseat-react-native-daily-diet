@@ -13,12 +13,15 @@ export const Container = styled.TouchableOpacity`
   display: block;
   gap: 4px;
   
-
-  ${({ theme, type = 'PRIMARY', size ="LARGE" }) => css`
+  ${({ theme, type = 'PRIMARY', size ="LARGE", disabled = false }) => css`
     width: ${ size === 'LARGE' ? 'auto' : '190px'};
     margin: ${ size === 'LARGE' ? '0 24px' : '0 auto'};
     border: 1px solid ${theme.COLORS.GRAY_200};
-    background-color: ${ type === 'PRIMARY' ? theme.COLORS.GRAY_200 : theme.COLORS.WHITE};
+    background-color: ${ 
+      type === 'PRIMARY' && !disabled ? theme.COLORS.GRAY_100 : 
+      type === 'SECONDARY' && !disabled ? theme.COLORS.WHITE:
+      type === 'PRIMARY' && disabled ? theme.COLORS.GRAY_200 : theme.COLORS.GRAY_500
+    }
   `};
 
   margin-bottom: 10px;

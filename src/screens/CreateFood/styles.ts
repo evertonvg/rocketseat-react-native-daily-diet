@@ -58,6 +58,7 @@ export const Label = styled.Text`
   `
 
   export const TextArea = styled.TextInput`
+    text-align-vertical: top;
     border-radius: 6px;
     height: 120px;
     ${({ theme }) => css`

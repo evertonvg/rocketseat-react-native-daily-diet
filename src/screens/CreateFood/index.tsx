@@ -2,13 +2,19 @@ import { StatisticsHeader } from "@components/StatisticsHeader";
 import { Container, DateInput, FlexEnd, Form, FormItem, FormRow, FormRowItem, Input, Label, TextArea, TextDateHour } from "./styles";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { useState } from "react";
-import { Platform } from "react-native";
+import { Alert, Platform } from "react-native";
 import { format } from "date-fns";
 import { Button } from "@components/Button";
 import { navigate } from "@routes/NavigationService";
 import { RadioButton } from "@components/RadioButton";
 
+import { foodCreate } from "@storage/food/foodCreate";
+import { AppError } from "@utils/AppError";
+
 export function CreateFood(){
+    const [name,setName] = useState('');
+    const [description,setDescription] = useState('');
+
     const [date, setDate] = useState(new Date());
     const [exibitDate, setExibitDate] = useState(format(new Date(), "dd/MM/yyyy"));
 
@@ -32,8 +38,34 @@ export function CreateFood(){
         }
     };
 
-    const handleNavigateToFeedback = () =>{
-        navigate("Feedback")
+    async function handleCreateNewFood(){
+
+        try {
+            const date = exibitDate.split('/')
+            const day = date[0]
+            const month = date[1]
+            const year = date[2]
+            
+            await foodCreate({
+                name: name,
+                description:description,
+                date:exibitDate,
+                hour:exibithour,
+                datehour: new Date(`${month}-${day}-${year} ${exibithour}`),
+                isInDiet
+            });
+            navigate("Feedback",{
+                isInDiet
+            })
+        } catch (error) {
+            if(error instanceof AppError) {
+                Alert.alert('Novo Grupo', error.message);
+            } else {
+                Alert.alert('Novo Grupo', 'Não foi possível criar um novo grupo.');
+                console.log(error);
+            }
+        }
+        
     }
 
     const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
@@ -70,13 +102,13 @@ export function CreateFood(){
                     <Label>
                         Nome
                     </Label>
-                    <Input/>  
+                    <Input value={name} onChangeText={setName} />  
                 </FormItem>
                 <FormItem>
                     <Label>
                         Descrição
                     </Label>
-                    <TextArea/>  
+                    <TextArea value={description} onChangeText={setDescription} />  
                 </FormItem>
                 <FormRow>
                     <FormRowItem>
@@ -138,9 +170,11 @@ export function CreateFood(){
                 <FlexEnd/>               
             </Form>
             <Button
+
                 title="Cadastrar refeição"
                 size="LARGE"
-                onPress={handleNavigateToFeedback}
+                onPress={handleCreateNewFood}
+                disabled={!name || !description}
             />
         </Container>
     )

@@ -1,5 +1,5 @@
 import { useTheme } from "styled-components/native";
-import { CardTypeStyleProps, Container, DetailText, PercentText } from "./styles";
+import {  Container, DetailText, PercentText } from "./styles";
 
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 }
 
 export function CountdownCard({ quantity, text, type}: Props) {
-const theme = useTheme();
+  const theme = useTheme();
 
   return (
     <Container type={type}>

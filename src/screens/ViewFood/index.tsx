@@ -4,18 +4,46 @@ import { useState } from 'react';
 import { useRoute } from "@react-navigation/native";
 import { StatisticsHeader } from '@components/StatisticsHeader';
 import { Button } from '@components/Button';
-import { hoursToMilliseconds } from 'date-fns';
+import { Alert } from 'react-native';
+
+import { navigate } from '@routes/NavigationService';
+
+import { foodsGetAll } from '@storage/food/foodGetAll';
+import { foodRemove } from '@storage/food/foodRemove'
 
 export function ViewFood() {
     const route = useRoute();
     const { title } = route.params as { title: string };
     const { description } = route.params as { description: string };
+    const { datehour } = route.params as { datehour: Date };
     const { date } = route.params as { date: string };
     const { hour } = route.params as { hour: string };
     const { onDiet } = route.params as { onDiet: boolean };
 
+    async function deleteFood(){
+        await foodRemove({
+            date,
+            description,
+            hour,
+            isInDiet: onDiet,
+            name: title,
+        })
+        navigate("Home")
+    }
 
-    const [isInDiet, setIsInDiet] = useState(true);
+    const handleDeleteFood = ()=>{
+        Alert.alert('Remover', `Deseja remover a refeição ${title}?`, [{
+        text: 'Remover',
+        onPress: () => {
+          deleteFood()
+        },
+      },
+      {
+        text: 'Cancelar',
+        style: 'cancel',
+      },
+    ])}
+
     return(
         <Container>
             <StatisticsHeader 
@@ -50,6 +78,7 @@ export function ViewFood() {
                 title='Excluir refeição'
                 icon='trash'
                 type='SECONDARY'
+                onPress={handleDeleteFood}
             />
         </Container> 
     )

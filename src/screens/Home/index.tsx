@@ -1,21 +1,22 @@
-
-import { Data } from '@components/Data';
 import { Container, Mask, Text } from './styles';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert, FlatList } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+
+import { foodsGetAll } from '@storage/food/foodGetAll';
+import { Data } from '@components/Data';
 import { Button } from '@components/Button';
 import { MainHeader } from '@components/MainHeader';
 import { SnackItem } from '@components/SnackItem';
 import { StatisticsCard } from '@components/StatisticsCard';
-
-import { useEffect, useState } from 'react';
-import { navigate } from '@routes/NavigationService';
-import { FlatList } from 'react-native';
 import { Loading } from '@components/Loading';
 import { ListEmpty } from '@components/Empty';
-import { format, isEqual, startOfDay } from 'date-fns';
+
+import { navigate } from '@routes/NavigationService';
 
 export interface Food {
     name: string;
-    datehour: Date;
+    datehour?: Date;
     date: string;
     hour:string;
     isInDiet: boolean;
@@ -31,55 +32,47 @@ export function Home() {
     const [totalFoods,setTotalFoods] = useState<number>(0);
     const [bestSequence,setBestSequence] = useState<number>(0);
 
-    const [foods, setFoods] = useState<Food[]>([
-        { name: "Soup", datehour: new Date("2025-02-12T08:55:00"), isInDiet: false, description: "A healthy choice.", date: "12/02/2025", hour: "08:55" },
-        { name: "Chicken", datehour: new Date("2024-01-20T07:06:00"), isInDiet: true, description: "A cheat meal.", date: "20/01/2024", hour: "07:06" },
-        { name: "Apple", datehour: new Date("2023-11-15T01:56:00"), isInDiet: true, description: "A quick snack.", date: "15/11/2023", hour: "01:56" },
-        { name: "Rice", datehour: new Date("2023-11-15T16:51:00"), isInDiet: true, description: "A hearty dinner.", date: "15/11/2023", hour: "16:51" },
-        { name: "Burger", datehour: new Date("2023-11-15T05:29:00"), isInDiet: false, description: "A healthy choice.", date: "15/11/2023", hour: "05:29" },
-        { name: "Chicken", datehour: new Date("2024-01-20T19:19:00"), isInDiet: true, description: "A quick snack.", date: "20/01/2024", hour: "19:19" },
-        { name: "Soup", datehour: new Date("2024-01-20T08:23:00"), isInDiet: false, description: "A quick snack.", date: "20/01/2024", hour: "08:23" },
-        { name: "Sushi", datehour: new Date("2023-11-15T11:01:00"), isInDiet: true, description: "A quick snack.", date: "15/11/2023", hour: "11:01" },
-        { name: "Soup", datehour: new Date("2024-01-20T09:26:00"), isInDiet: false, description: "A quick snack.", date: "20/01/2024", hour: "09:26" },
-        { name: "Cake", datehour: new Date("2022-11-13T13:05:00"), isInDiet: false, description: "A fresh dessert.", date: "13/11/2022", hour: "13:05" },
-        { name: "Soup", datehour: new Date("2024-01-20T06:48:00"), isInDiet: true, description: "A fresh dessert.", date: "20/01/2024", hour: "06:48" },
-        { name: "Burger", datehour: new Date("2025-02-12T01:27:00"), isInDiet: false, description: "A healthy choice.", date: "12/02/2025", hour: "01:27" },
-        { name: "Rice", datehour: new Date("2022-11-13T00:50:00"), isInDiet: true, description: "A healthy choice.", date: "13/11/2022", hour: "00:50" },
-        { name: "Sushi", datehour: new Date("2023-11-15T21:58:00"), isInDiet: false, description: "A hearty dinner.", date: "15/11/2023", hour: "21:58" },
-        { name: "Burger", datehour: new Date("2025-02-12T07:49:00"), isInDiet: false, description: "A fresh dessert.", date: "12/02/2025", hour: "07:49" }
+    const [foods, setFoods] = useState<Food[]>([]); 
 
-    ]);
-    
+    async function fetchGroups() {
+        try {
+            setIsLoading(true);
+            const data = await foodsGetAll();
    
-    useEffect(()=>{
+            const sortedFoods = data.sort((a, b) => {
+                const data1 = new Date(b.datehour);
+                const data2 = new Date(a.datehour);
+                return data1.getTime() - data2.getTime();
+            });
 
-        const f = foods
-        setFoods(f.sort((a, b) => b.datehour.getTime() - a.datehour.getTime()))
+            setFoods(sortedFoods);
 
-        let dates = foods.map(item => item.date);
-        dates = [...new Set(dates)]
-        if(dates.length){
-            setDates(dates)
-        }else{
-            setDates([])
+            let dates = sortedFoods.map(item => item.date);
+            dates = [...new Set(dates)];
+            setDates(dates);
+
+            setTotalFoods(sortedFoods.length);
+
+            const foodsOnDiet = sortedFoods.filter((food) => food.isInDiet);
+
+            const percentage = sortedFoods.length 
+                ? parseFloat((Number(foodsOnDiet.length * 100) / sortedFoods.length).toFixed(2)) 
+                : 0;
+
+            setOnDietPercentage(percentage);
+            setOnDietCount(foodsOnDiet.length);
+            setOutDietCount(sortedFoods.length - foodsOnDiet.length);
+
+            const bestSequence = findLongestInDietSequence(sortedFoods);
+            setBestSequence(bestSequence);
+
+        } catch (error) {
+            Alert.alert("Alimentos", "Não foi possível carregar os alimentos");
+            console.log(error);
+        } finally {
+            setIsLoading(false);
         }
-
-        setTotalFoods(foods.length)
-
-        const foodsOnDiet = foods.filter((food)=>{
-            return food.isInDiet
-        })
-
-        const percentage = parseFloat((Number(foodsOnDiet.length * 100) / foods.length).toFixed(2));
-        setOnDietPercentage(percentage);
-        setOnDietCount(foodsOnDiet.length)
-        setOutDietCount(totalFoods - foodsOnDiet.length)
-
-        const bestSequence = findLongestInDietSequence(foods);
-
-        setBestSequence(bestSequence)
-
-    },[])
+    }
 
     const findLongestInDietSequence = (data:Food[]) => {
         let maxSequence = 0;
@@ -103,21 +96,29 @@ export function Home() {
             onDietPercentage,
             onDietCount,
             outDietCount,
-            bestSequence
+            bestSequence,
         });
     };
     const handleNavigateToCreateFood = () =>{
         navigate("CreateFood")
     }
-    const handleNavigateToViewFood = (title:string,description:string,date:string,hour:string,onDiet:boolean) =>{
+    const handleNavigateToViewFood = (title:string,description:string,date:string,hour:string,onDiet:boolean,datehour:Date) =>{
         navigate("ViewFood",{
             title,
             description,
             date,
             hour,
-            onDiet
+            onDiet,
+            datehour,
         })
     }
+
+    // useEffect(()=>{
+    //     fetchGroups()
+    // },[])
+    useFocusEffect(useCallback(() => {
+        fetchGroups()
+    },[]))
 
     return(
         <Container>
@@ -154,7 +155,8 @@ export function Home() {
                                             item.description,
                                             item.date,
                                             item.hour,
-                                            item.isInDiet
+                                            item.isInDiet,
+                                            item.datehour
                                         )}} 
                                         title={item.name}
                                         time={item.hour}

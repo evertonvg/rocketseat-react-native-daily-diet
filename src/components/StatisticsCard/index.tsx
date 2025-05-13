@@ -18,7 +18,7 @@ const theme = useTheme();
         </ArrowButton>
         <PercentText>{statistic}%</PercentText>
         <DetailText>
-            {type ? 'das refeições dentro da dieta' : 'das refeições fora da dieta'}
+            das refeições dentro da dieta
         </DetailText>
     </Container>
   );
