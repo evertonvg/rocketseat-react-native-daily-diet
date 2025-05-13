@@ -11,22 +11,39 @@ import { RadioButton } from "@components/RadioButton";
 import { foodCreate } from "@storage/food/foodCreate";
 import { AppError } from "@utils/AppError";
 
+import { useRoute } from "@react-navigation/native";
+
 export function CreateFood(){
-    const [name,setName] = useState('');
-    const [description,setDescription] = useState('');
+    const route = useRoute();
+    const { headerTitle } = route.params as { headerTitle: string };
+    const { headerStyle } = route.params as { headerStyle: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' };
+    const { id } = route.params as { id: string };
+    const { titleParam } = route.params as { titleParam: string };
+    const { descriptionParam } = route.params as { descriptionParam: string };
+    const { dateParam } = route.params as { dateParam: string };
+    const dayMonthYear = dateParam.split('/')
+    
+    const { hourParam } = route.params as { hourParam: string };
+    const { onDietParam }  = route.params as { onDietParam: boolean };
+    const { dateHourParam }  = route.params as { dateHourParam: Date };
 
-    const [date, setDate] = useState(new Date());
-    const [exibitDate, setExibitDate] = useState(format(new Date(), "dd/MM/yyyy"));
+    const [name,setName] = useState(titleParam ? titleParam : '');
+    const [description,setDescription] = useState(descriptionParam ? descriptionParam :'');
 
-    const [hour, setHour] = useState(new Date());
-    const [exibithour, setExibithour] = useState(format(new Date(), "HH:mm"));
+    const [date, setDate] = useState(dateParam && hourParam ? new Date(`${dayMonthYear[1]}-${dayMonthYear[0]}-${dayMonthYear[2]} ${hourParam}`) : new Date());
+    const [exibitDate, setExibitDate] = useState(dateParam ? dateParam : format(new Date(), "dd/MM/yyyy"));
 
+    const [hour, setHour] = useState(dateParam && hourParam ? new Date(`${dayMonthYear[1]}-${dayMonthYear[0]}-${dayMonthYear[2]} ${hourParam}`) : new Date());
+    const [exibithour, setExibithour] = useState(hourParam ? hourParam : format(new Date(), "HH:mm"));
+
+    console.warn(`${dayMonthYear[1]}-${dayMonthYear[0]}-${dayMonthYear[2]} ${hourParam}`)
+    
     const [showDate, setShowDate] = useState(false);
     const [showHour, setShowHour] = useState(false);
 
     const [pickingMode, setPickingMode] = useState<"date" | "time">('date');
 
-    const [isInDiet,setIsInDiet] = useState<boolean>(true);
+    const [isInDiet,setIsInDiet] = useState<boolean>(typeof onDietParam !== "undefined" ? onDietParam : true );
 
      const showPicker = (pickerMode: "date" | "time") => {
         if(pickerMode == 'date'){
@@ -39,31 +56,34 @@ export function CreateFood(){
     };
 
     async function handleCreateNewFood(){
-
-        try {
-            const date = exibitDate.split('/')
-            const day = date[0]
-            const month = date[1]
-            const year = date[2]
-            
-            await foodCreate({
-                name: name,
-                description:description,
-                date:exibitDate,
-                hour:exibithour,
-                datehour: new Date(`${month}-${day}-${year} ${exibithour}`),
-                isInDiet
-            });
-            navigate("Feedback",{
-                isInDiet
-            })
-        } catch (error) {
-            if(error instanceof AppError) {
-                Alert.alert('Novo Grupo', error.message);
-            } else {
-                Alert.alert('Novo Grupo', 'Não foi possível criar um novo grupo.');
-                console.log(error);
+        if(headerTitle == 'Nova refeição'){
+            try {
+                const date = exibitDate.split('/')
+                const day = date[0]
+                const month = date[1]
+                const year = date[2]
+                
+                await foodCreate({
+                    name: name,
+                    description:description,
+                    date:exibitDate,
+                    hour:exibithour,
+                    datehour: new Date(`${month}-${day}-${year}T${exibithour}`),
+                    isInDiet,
+                });
+                navigate("Feedback",{
+                    isInDiet
+                })
+            } catch (error) {
+                if(error instanceof AppError) {
+                    Alert.alert('Nova Refeição', error.message);
+                } else {
+                    Alert.alert('Novo Grupo', 'Não foi possível criar uma nova refeição.');
+                    console.log(error);
+                }
             }
+        }else{
+
         }
         
     }
@@ -93,9 +113,9 @@ export function CreateFood(){
     return(
         <Container>
             <StatisticsHeader 
-                type='NEUTRAL'
+                type={headerStyle}
                 textType='MIDDLE'
-                text='Nova refeição' 
+                text={headerTitle}
             />
             <Form>
                 <FormItem>
@@ -120,8 +140,9 @@ export function CreateFood(){
                         </DateInput>
                         { showDate && <DateTimePicker
                             onChange={onChange}
-                            value={new Date()}
+                            value={date}
                             mode="date"
+                            maximumDate={new Date()}
                             is24Hour={true}
                             display={Platform.OS === "ios" ? "spinner" : "default"}
                         /> }
@@ -137,7 +158,7 @@ export function CreateFood(){
                         </DateInput>
                         {showHour && <DateTimePicker
                             onChange={onChange}
-                            value={new Date()}
+                            value={hour}
                             mode="time"
                             is24Hour={true}
                             display={Platform.OS === "ios" ? "spinner" : "default"}
@@ -171,7 +192,7 @@ export function CreateFood(){
             </Form>
             <Button
 
-                title="Cadastrar refeição"
+                title={headerTitle =='Nova refeição'?"Cadastrar refeição":"Salvar alterações "}
                 size="LARGE"
                 onPress={handleCreateNewFood}
                 disabled={!name || !description}

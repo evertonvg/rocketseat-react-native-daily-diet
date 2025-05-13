@@ -13,22 +13,31 @@ import { foodRemove } from '@storage/food/foodRemove'
 
 export function ViewFood() {
     const route = useRoute();
+    const { id } = route.params as { id: string };
     const { title } = route.params as { title: string };
     const { description } = route.params as { description: string };
-    const { datehour } = route.params as { datehour: Date };
     const { date } = route.params as { date: string };
     const { hour } = route.params as { hour: string };
     const { onDiet } = route.params as { onDiet: boolean };
+    const { datehour } = route.params as { datehour: Date };
 
     async function deleteFood(){
-        await foodRemove({
-            date,
-            description,
-            hour,
-            isInDiet: onDiet,
-            name: title,
-        })
+        await foodRemove(id)
         navigate("Home")
+    }
+
+    const handleNavigateToCreateFood = () =>{
+        navigate("CreateFood",{
+            headerTitle: 'Editar refeição',
+            headerStyle: onDiet ? 'POSITIVE' : 'NEGATIVE',
+            id,
+            titleParam:title,
+            descriptionParam:description,
+            dateParam:date,
+            hourParam:hour,
+            onDietParam:onDiet,
+            dateHourParam: datehour
+        })
     }
 
     const handleDeleteFood = ()=>{
@@ -47,7 +56,7 @@ export function ViewFood() {
     return(
         <Container>
             <StatisticsHeader 
-                type='POSITIVE'
+                type={onDiet ? 'POSITIVE' : 'NEGATIVE'}
                 textType='MIDDLE'
                 text='Refeição' 
             />
@@ -73,6 +82,7 @@ export function ViewFood() {
             <Button
                 title='Editar Refeição'
                 icon='pencil'
+                onPress={handleNavigateToCreateFood}
             />
             <Button
                 title='Excluir refeição'
