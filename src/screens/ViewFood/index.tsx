@@ -1,25 +1,39 @@
 
-import { Container, FlexEnd, Title, Description, SubTitle, DietStatus, DietText, Ball } from './styles';
-import { useState } from 'react';
-import { useRoute } from "@react-navigation/native";
+import { Container, FlexEnd, Title, Description, SubTitle, DietStatus, DietText, Ball, ContentContainer } from './styles';
+import { useCallback, useState } from 'react';
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { StatisticsHeader } from '@components/StatisticsHeader';
 import { Button } from '@components/Button';
 import { Alert } from 'react-native';
 
 import { navigate } from '@routes/NavigationService';
 
-import { foodsGetAll } from '@storage/food/foodGetAll';
+import { foodsGetbyId } from '@storage/food/foodGetbyId';
 import { foodRemove } from '@storage/food/foodRemove'
+import { Food } from '@screens/Home';
 
 export function ViewFood() {
     const route = useRoute();
     const { id } = route.params as { id: string };
-    const { title } = route.params as { title: string };
-    const { description } = route.params as { description: string };
-    const { date } = route.params as { date: string };
-    const { hour } = route.params as { hour: string };
-    const { onDiet } = route.params as { onDiet: boolean };
-    const { datehour } = route.params as { datehour: Date };
+
+    const [food,setFood] = useState<Food>()
+    const [isLoading, setIsLoading] = useState(false);
+
+    async function fetchFood() {
+            try {
+                setIsLoading(true);
+                const data = await foodsGetbyId(id);
+          
+                setFood(data);
+    
+            } catch (error) {
+                Alert.alert("Alimento", "Não foi possível carrega os dados do alimento");
+                console.log(error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    
 
     async function deleteFood(){
         await foodRemove(id)
@@ -29,19 +43,19 @@ export function ViewFood() {
     const handleNavigateToCreateFood = () =>{
         navigate("CreateFood",{
             headerTitle: 'Editar refeição',
-            headerStyle: onDiet ? 'POSITIVE' : 'NEGATIVE',
+            headerStyle: food?.isInDiet ? 'POSITIVE' : 'NEGATIVE',
             id,
-            titleParam:title,
-            descriptionParam:description,
-            dateParam:date,
-            hourParam:hour,
-            onDietParam:onDiet,
-            dateHourParam: datehour
+            titleParam:food?.name,
+            descriptionParam:food?.description,
+            dateParam:food?.date,
+            hourParam:food?.hour,
+            onDietParam:food?.isInDiet,
+            dateHourParam: food?.datehour
         })
     }
 
     const handleDeleteFood = ()=>{
-        Alert.alert('Remover', `Deseja remover a refeição ${title}?`, [{
+        Alert.alert('Remover', `Deseja remover a refeição ${food?.name}?`, [{
         text: 'Remover',
         onPress: () => {
           deleteFood()
@@ -53,43 +67,49 @@ export function ViewFood() {
       },
     ])}
 
+    useFocusEffect(useCallback(() => {
+        fetchFood()
+    },[]))
+
     return(
         <Container>
             <StatisticsHeader 
-                type={onDiet ? 'POSITIVE' : 'NEGATIVE'}
+                type={food?.isInDiet ? 'POSITIVE' : 'NEGATIVE'}
                 textType='MIDDLE'
                 text='Refeição' 
             />
-            <Title>
-               {title}
-            </Title>
-            <Description>
-                {description}
-            </Description>
-            <SubTitle>
-                Data e hora
-            </SubTitle>
-            <Description>
-                {date} às {hour}
-            </Description>
-            <DietStatus>
-                <Ball variant={onDiet}></Ball>
-                <DietText>
-                    {onDiet ? 'Dentro da dieta' : 'fora da dieta'}
-                </DietText>
-            </DietStatus>
-            <FlexEnd/>
-            <Button
-                title='Editar Refeição'
-                icon='pencil'
-                onPress={handleNavigateToCreateFood}
-            />
-            <Button
-                title='Excluir refeição'
-                icon='trash'
-                type='SECONDARY'
-                onPress={handleDeleteFood}
-            />
+            <ContentContainer>
+                <Title>
+                    {food?.name}
+                </Title>
+                <Description>
+                    {food?.description}
+                </Description>
+                <SubTitle>
+                    Data e hora
+                </SubTitle>
+                <Description>
+                    {food?.date} às {food?.hour}
+                </Description>
+                <DietStatus>
+                    {food && <Ball variant={food.isInDiet}></Ball>}
+                    <DietText>
+                        {food?.isInDiet ? 'Dentro da dieta' : 'fora da dieta'}
+                    </DietText>
+                </DietStatus>
+                <FlexEnd/>
+                <Button
+                    title='Editar Refeição'
+                    icon='pencil'
+                    onPress={handleNavigateToCreateFood}
+                />
+                <Button
+                    title='Excluir refeição'
+                    icon='trash'
+                    type='SECONDARY'
+                    onPress={handleDeleteFood}
+                />
+            </ContentContainer>
         </Container> 
     )
 }

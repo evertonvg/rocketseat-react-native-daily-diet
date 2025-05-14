@@ -13,10 +13,6 @@ export function ViewStatistics() {
     const { outDietCount } = route.params as { outDietCount: number };
     const { bestSequence } = route.params as { bestSequence: number };
 
-    useEffect(()=>{
-        console.warn(onDietPercentage)
-    },[])
-
     return( 
         <Container>
             <StatisticsHeader 

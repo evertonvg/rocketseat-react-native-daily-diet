@@ -37,36 +37,30 @@ export function Home() {
 
     const [foods, setFoods] = useState<Food[]>([]); 
 
-    async function fetchGroups() {
+    async function fetchFoods() {
         try {
             setIsLoading(true);
             const data = await foodsGetAll();
    
-            const sortedFoodsByDate = data.sort((a, b) => {
-                const data1 = new Date(b.datehour);
-                const data2 = new Date(a.datehour);
-                return data1.getTime() - data2.getTime();
-            });
+            setFoods(data);
 
-            setFoods(sortedFoodsByDate);
-
-            let dates = sortedFoodsByDate.map(item => item.date);
+            let dates = data.map(item => item.date);
             dates = [...new Set(dates)];
             setDates(dates);
 
-            setTotalFoods(sortedFoodsByDate.length);
+            setTotalFoods(data.length);
 
-            const foodsOnDiet = sortedFoodsByDate.filter((food) => food.isInDiet);
+            const foodsOnDiet = data.filter((food) => food.isInDiet);
 
-            const percentage = sortedFoodsByDate.length 
-                ? parseFloat((Number(foodsOnDiet.length * 100) / sortedFoodsByDate.length).toFixed(2)) 
+            const percentage = data.length 
+                ? parseFloat((Number(foodsOnDiet.length * 100) / data.length).toFixed(2)) 
                 : 0;
 
             setOnDietPercentage(percentage);
             setOnDietCount(foodsOnDiet.length);
-            setOutDietCount(sortedFoodsByDate.length - foodsOnDiet.length);
+            setOutDietCount(data.length - foodsOnDiet.length);
 
-            const bestSequence = findLongestInDietSequence(sortedFoodsByDate);
+            const bestSequence = findLongestInDietSequence(data);
             setBestSequence(bestSequence);
 
         } catch (error) {
@@ -92,20 +86,14 @@ export function Home() {
             headerStyle: 'NEUTRAL'
         })
     }
-    const handleNavigateToViewFood = (id:string,title:string,description:string,date:string,hour:string,onDiet:boolean,datehour:Date) =>{
+    const handleNavigateToViewFood = (id:string) =>{
         navigate("ViewFood",{
             id,
-            title,
-            description,
-            date,
-            hour,
-            onDiet,
-            datehour,
         })
     }
 
     useFocusEffect(useCallback(() => {
-        fetchGroups()
+        fetchFoods()
     },[]))
 
     return(
@@ -140,12 +128,6 @@ export function Home() {
                                     <SnackItem
                                         onPress={()=>{handleNavigateToViewFood(
                                             item.id || '',
-                                            item.name,
-                                            item.description,
-                                            item.date,
-                                            item.hour,
-                                            item.isInDiet,
-                                            item.datehour
                                         )}} 
                                         title={item.name}
                                         time={item.hour}
@@ -163,8 +145,7 @@ export function Home() {
                     )}
                 />
             </>
-                
-                
+              
             }
              
         </Container> 

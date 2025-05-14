@@ -9,10 +9,17 @@ export const Container = styled(SafeAreaView)`
   flex: 1;
   width: 100%;
   margin: 0 auto;
+`;
+export const ContentContainer = styled.View`
+  flex: 1;
+  z-index: 1;
+  transform: translateY(-20px);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   ${({ theme }) => css`
       background-color:  ${theme.COLORS.GRAY_700};
   `};
-`;
+`
 export const Title = styled.Text`
   text-align: left;
   border-top-left-radius: 20px;
